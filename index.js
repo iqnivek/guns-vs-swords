@@ -1,4 +1,5 @@
-var horizontalVelocity = 400;
+var HORIZONTAL_VELOCITY = 400;
+var JUMP_INTERVAL = 700;
 
 var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'game');
 
@@ -164,7 +165,7 @@ PhaserGame.prototype = {
                 this.player.body.velocity.y = -300;
             }
 
-            this.jumpTimer = this.time.time + 750;
+            this.jumpTimer = this.time.time + JUMP_INTERVAL;
         }
 
         if (this.wasLocked)
@@ -181,54 +182,40 @@ PhaserGame.prototype = {
         this.physics.arcade.collide(this.player, this.stationary);
         this.physics.arcade.collide(this.player, this.clouds, this.customSep, null, this);
 
-        //  Do this AFTER the collide check, or we won't have blocked/touching set
-        var standing = this.player.body.blocked.down || this.player.body.touching.down || this.locked;
-
         this.player.body.velocity.x = 0;
 
-        if (this.cursors.left.isDown)
-        {
-            this.player.body.velocity.x = -horizontalVelocity;
+        if (this.cursors.left.isDown) {
+            this.player.body.velocity.x = -HORIZONTAL_VELOCITY;
 
-            if (this.facing !== 'left')
-            {
+            if (this.facing !== 'left') {
                 this.player.play('left');
                 this.facing = 'left';
             }
-        }
-        else if (this.cursors.right.isDown)
-        {
-            this.player.body.velocity.x = horizontalVelocity;
+        } else if (this.cursors.right.isDown) {
+            this.player.body.velocity.x = HORIZONTAL_VELOCITY;
 
-            if (this.facing !== 'right')
-            {
+            if (this.facing !== 'right') {
                 this.player.play('right');
                 this.facing = 'right';
             }
-        }
-        else
-        {
-            if (this.facing !== 'idle')
-            {
+        } else {
+            if (this.facing !== 'idle') {
                 this.player.animations.stop();
 
-                if (this.facing === 'left')
-                {
+                if (this.facing === 'left') {
                     this.player.frame = 0;
-                }
-                else
-                {
+                } else {
                     this.player.frame = 5;
                 }
 
                 this.facing = 'idle';
             }
         }
-        
-        if (standing && this.cursors.up.isDown && this.time.time > this.jumpTimer)
-        {
-            if (this.locked)
-            {
+
+        //  Do this AFTER the collide check, or we won't have blocked/touching set
+        // var standing = this.player.body.blocked.down || this.player.body.touching.down || this.locked;
+        if (this.cursors.up.isDown && this.time.time > this.jumpTimer) {
+            if (this.locked) {
                 this.cancelLock();
             }
 
