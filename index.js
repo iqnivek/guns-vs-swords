@@ -1,7 +1,8 @@
+var horizontalVelocity = 400;
+
 var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'game');
 
 var PhaserGame = function () {
-
     this.bg = null;
     this.trees = null;
 
@@ -17,42 +18,25 @@ var PhaserGame = function () {
     this.lockedTo = null;
     this.wasLocked = false;
     this.willJump = false;
-
 };
 
 PhaserGame.prototype = {
-
     init: function () {
-
         this.game.renderer.renderSession.roundPixels = true;
 
         this.world.resize(640*3, 480);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
-
-        this.physics.arcade.gravity.y = 600;
-
+        this.physics.arcade.gravity.y = 300;
     },
-
     preload: function () {
-
-        //  We need this because the assets are on Amazon S3
-        //  Remove the next 2 lines if running locally
-        // this.load.baseURL = 'http://files.phaser.io.s3.amazonaws.com/codingtips/issue004/';
-        this.load.crossOrigin = 'anonymous';
-
         this.load.image('trees', 'assets/trees-h.png');
         this.load.image('background', 'assets/clouds-h.png');
         this.load.image('platform', 'assets/platform.png');
         this.load.image('cloud-platform', 'assets/cloud-platform.png');
         this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-
-        //  Note: Graphics are Copyright 2015 Photon Storm Ltd.
-
     },
-
     create: function () {
-
         this.background = this.add.tileSprite(0, 0, 640, 480, 'background');
         this.background.fixedToCamera = true;
 
@@ -189,11 +173,8 @@ PhaserGame.prototype = {
             this.lockedTo.playerLocked = false;
             this.lockedTo = null;
         }
-
     },
-
     update: function () {
-
         this.background.tilePosition.x = -(this.camera.x * 0.7);
         this.trees.tilePosition.x = -(this.camera.x * 0.9);
 
@@ -207,7 +188,7 @@ PhaserGame.prototype = {
 
         if (this.cursors.left.isDown)
         {
-            this.player.body.velocity.x = -150;
+            this.player.body.velocity.x = -horizontalVelocity;
 
             if (this.facing !== 'left')
             {
@@ -217,7 +198,7 @@ PhaserGame.prototype = {
         }
         else if (this.cursors.right.isDown)
         {
-            this.player.body.velocity.x = 150;
+            this.player.body.velocity.x = horizontalVelocity;
 
             if (this.facing !== 'right')
             {
