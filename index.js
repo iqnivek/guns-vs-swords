@@ -60,7 +60,6 @@ PhaserGame.prototype = {
         this.clouds = this.add.physicsGroup();
 
         var cloud1 = new CloudPlatform(this.game, 300, 450, 'cloud-platform', this.clouds);
-
         cloud1.addMotionPath([
             { x: "+200", xSpeed: 2000, xEase: "Linear", y: "-200", ySpeed: 2000, yEase: "Sine.easeIn" },
             { x: "-200", xSpeed: 2000, xEase: "Linear", y: "-200", ySpeed: 2000, yEase: "Sine.easeOut" },
@@ -69,14 +68,12 @@ PhaserGame.prototype = {
         ]);
 
         var cloud2 = new CloudPlatform(this.game, 800, 96, 'cloud-platform', this.clouds);
-
         cloud2.addMotionPath([
             { x: "+0", xSpeed: 2000, xEase: "Linear", y: "+300", ySpeed: 2000, yEase: "Sine.easeIn" },
             { x: "-0", xSpeed: 2000, xEase: "Linear", y: "-300", ySpeed: 2000, yEase: "Sine.easeOut" }
         ]);
 
         var cloud3 = new CloudPlatform(this.game, 1300, 290, 'cloud-platform', this.clouds);
-
         cloud3.addMotionPath([
             { x: "+500", xSpeed: 4000, xEase: "Expo.easeIn", y: "-200", ySpeed: 3000, yEase: "Linear" },
             { x: "-500", xSpeed: 4000, xEase: "Expo.easeOut", y: "+200", ySpeed: 3000, yEase: "Linear" }
@@ -193,8 +190,6 @@ PhaserGame.prototype = {
             }
         }
 
-        //  Do this AFTER the collide check, or we won't have blocked/touching set
-        // var standing = this.player.body.blocked.down || this.player.body.touching.down || this.locked;
         if (this.cursors.up.isDown && this.time.time > this.jumpTimer) {
             if (this.locked) {
                 this.cancelLock();
@@ -209,7 +204,6 @@ PhaserGame.prototype = {
 };
 
 CloudPlatform = function (game, x, y, key, group) {
-
     if (typeof group === 'undefined') { group = game.world; }
 
     Phaser.Sprite.call(this, game, x, y, key);
@@ -226,14 +220,12 @@ CloudPlatform = function (game, x, y, key, group) {
     this.playerLocked = false;
 
     group.add(this);
-
 };
 
 CloudPlatform.prototype = Object.create(Phaser.Sprite.prototype);
 CloudPlatform.prototype.constructor = CloudPlatform;
 
 CloudPlatform.prototype.addMotionPath = function (motionPath) {
-
     this.tweenX = this.game.add.tween(this.body);
     this.tweenY = this.game.add.tween(this.body);
 
@@ -242,29 +234,23 @@ CloudPlatform.prototype.addMotionPath = function (motionPath) {
     //   { x: "+200", xSpeed: 2000, xEase: "Linear", y: "-200", ySpeed: 2000, yEase: "Sine.easeIn" }
     //  ]
 
-    for (var i = 0; i < motionPath.length; i++)
-    {
+    for (var i = 0; i < motionPath.length; i++) {
         this.tweenX.to( { x: motionPath[i].x }, motionPath[i].xSpeed, motionPath[i].xEase);
         this.tweenY.to( { y: motionPath[i].y }, motionPath[i].ySpeed, motionPath[i].yEase);
     }
 
     this.tweenX.loop();
     this.tweenY.loop();
-
 };
 
 CloudPlatform.prototype.start = function () {
-
     this.tweenX.start();
     this.tweenY.start();
-
 };
 
 CloudPlatform.prototype.stop = function () {
-
     this.tweenX.stop();
     this.tweenY.stop();
-
 };
 
 game.state.add('Game', PhaserGame, true);
