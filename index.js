@@ -1,5 +1,7 @@
 var HORIZONTAL_VELOCITY = 400;
-var JUMP_INTERVAL = 700;
+var JUMP_VELOCITY = 600;
+var JUMP_INTERVAL = 400;
+var GRAVITY = 1600;
 
 var game = new Phaser.Game(640, 480, Phaser.CANVAS, 'game');
 
@@ -28,7 +30,7 @@ PhaserGame.prototype = {
         this.world.resize(640*3, 480);
 
         this.physics.startSystem(Phaser.Physics.ARCADE);
-        this.physics.arcade.gravity.y = 300;
+        this.physics.arcade.gravity.y = GRAVITY;
     },
     preload: function () {
         this.load.image('trees', 'assets/trees-h.png');
@@ -99,77 +101,56 @@ PhaserGame.prototype = {
         this.clouds.callAll('start');
 
     },
-
     customSep: function (player, platform) {
-
-        if (!this.locked && player.body.velocity.y > 0)
-        {
+        if (!this.locked && player.body.velocity.y > 0) {
             this.locked = true;
             this.lockedTo = platform;
             platform.playerLocked = true;
 
             player.body.velocity.y = 0;
         }
-
     },
-
     checkLock: function () {
-
         this.player.body.velocity.y = 0;
 
         //  If the player has walked off either side of the platform then they're no longer locked to it
-        if (this.player.body.right < this.lockedTo.body.x || this.player.body.x > this.lockedTo.body.right)
-        {
+        if (this.player.body.right < this.lockedTo.body.x || this.player.body.x > this.lockedTo.body.right) {
             this.cancelLock();
         }
-
     },
-
     cancelLock: function () {
-
         this.wasLocked = true;
         this.locked = false;
-
     },
-
     preRender: function () {
-
-        if (this.game.paused)
-        {
+        if (this.game.paused) {
             //  Because preRender still runs even if your game pauses!
             return;
         }
 
-        if (this.locked || this.wasLocked)
-        {
+        if (this.locked || this.wasLocked) {
             this.player.x += this.lockedTo.deltaX;
             this.player.y = this.lockedTo.y - 48;
 
-            if (this.player.body.velocity.x !== 0)
-            {
+            if (this.player.body.velocity.x !== 0) {
                 this.player.body.velocity.y = 0;
             }
         }
 
-        if (this.willJump)
-        {
+        if (this.willJump) {
             this.willJump = false;
 
-            if (this.lockedTo && this.lockedTo.deltaY < 0 && this.wasLocked)
-            {
+            if (this.lockedTo && this.lockedTo.deltaY < 0 && this.wasLocked) {
                 //  If the platform is moving up we add its velocity to the players jump
-                this.player.body.velocity.y = -300 + (this.lockedTo.deltaY * 10);
-            }
-            else
-            {
-                this.player.body.velocity.y = -300;
+                this.player.body.velocity.y = -JUMP_VELOCITY + (this.lockedTo.deltaY * 10);
+            } else {
+                this.player.body.velocity.y = -JUMP_VELOCITY;
             }
 
             this.jumpTimer = this.time.time + JUMP_INTERVAL;
         }
 
-        if (this.wasLocked)
-        {
+        if (this.wasLocked) {
             this.wasLocked = false;
             this.lockedTo.playerLocked = false;
             this.lockedTo = null;
@@ -218,17 +199,13 @@ PhaserGame.prototype = {
             if (this.locked) {
                 this.cancelLock();
             }
-
             this.willJump = true;
         }
 
-        if (this.locked)
-        {
+        if (this.locked) {
             this.checkLock();
         }
-
     }
-
 };
 
 CloudPlatform = function (game, x, y, key, group) {
