@@ -10,6 +10,7 @@ var PhaserGame = function () {
     this.trees = null;
 
     this.player = null;
+    this.playerSword = null;
 
     this.stationary = null;
     this.clouds = null;
@@ -37,6 +38,7 @@ PhaserGame.prototype = {
         this.load.image('background', 'assets/clouds-h.png');
         this.load.image('platform', 'assets/platform.png');
         this.load.image('cloud-platform', 'assets/cloud-platform.png');
+        this.load.image('playerSword', 'assets/sword.gif');
         this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
     },
     create: function () {
@@ -81,6 +83,7 @@ PhaserGame.prototype = {
 
         //  The Player
         this.player = this.add.sprite(32, 0, 'dude');
+        this.playerSword = this.add.sprite(this.player.x, this.player.y, 'playerSword');
 
         this.physics.arcade.enable(this.player);
 
