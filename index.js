@@ -11,6 +11,7 @@ var PhaserGame = function () {
 
     this.player = null;
     this.playerSword = null;
+    this.playerGroup = null;
 
     this.stationary = null;
     this.clouds = null;
@@ -83,7 +84,10 @@ PhaserGame.prototype = {
 
         //  The Player
         this.player = this.add.sprite(32, 0, 'dude');
-        this.playerSword = this.add.sprite(this.player.x, this.player.y, 'playerSword');
+
+        this.playerGroup = this.add.group();
+        this.playerGroup.add(this.player);
+        this.playerGroup.create(0, 0, 'playerSword');
 
         this.physics.arcade.enable(this.player);
 
